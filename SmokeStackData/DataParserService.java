@@ -25,7 +25,7 @@ public class DataParserService {
     public void parseData() {
         try {
             StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/cleansys/rltmMesureResult"); /*URL*/
-            urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=zyPKasfClmXWQUP0jZLMGiyMTO0Ykuzu1p5AXxRMTWZLpzeDtt58hJaPT4VvUMpwsswMa2pMScIgEKCGwb3ECw=="); /*Service Key*/
+            urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "서비스키"); /*Service Key*/
             urlBuilder.append("&" + URLEncoder.encode("areaNm", "UTF-8") + "=" + URLEncoder.encode("서울", "UTF-8")); /*지역 명 LIKE 검색*/
             //urlBuilder.append("&" + URLEncoder.encode("factManageNm","UTF-8") + "=" + URLEncoder.encode("노원자원회수시설", "UTF-8")); /*사업장의 이름 LIKE 검색*/
             //urlBuilder.append("&" + URLEncoder.encode("stackCode","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*배출구 번호*/
