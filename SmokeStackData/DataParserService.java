@@ -22,11 +22,14 @@ import java.util.List;
 public class DataParserService {
     @Autowired
     private SSDRepository ssdRepository;
+    public boolean checkInt(String s){
+        return (48 <= s.charAt(0) && s.charAt(0) <= 57);
+    }
     public void parseData() {
         try {
             StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/cleansys/rltmMesureResult"); /*URL*/
-            urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "서비스키"); /*Service Key*/
-            urlBuilder.append("&" + URLEncoder.encode("areaNm", "UTF-8") + "=" + URLEncoder.encode("서울", "UTF-8")); /*지역 명 LIKE 검색*/
+            urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=서비스키"); /*Service Key*/
+            //urlBuilder.append("&" + URLEncoder.encode("areaNm", "UTF-8") + "=" + URLEncoder.encode("서울", "UTF-8")); /*지역 명 LIKE 검색*/
             //urlBuilder.append("&" + URLEncoder.encode("factManageNm","UTF-8") + "=" + URLEncoder.encode("노원자원회수시설", "UTF-8")); /*사업장의 이름 LIKE 검색*/
             //urlBuilder.append("&" + URLEncoder.encode("stackCode","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*배출구 번호*/
             urlBuilder.append("&" + URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*json, xml 중 택1*/
@@ -59,7 +62,7 @@ public class DataParserService {
                 System.out.println("Error writing to JSON file: " + e.getMessage());
             }
         } catch (IOException e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
 
     }
@@ -71,21 +74,80 @@ public class DataParserService {
 
             try {
                 JsonNode rootNode = mapper.readTree(json);
-                JsonNode items = rootNode.path("response").path("body").path("items"); 
+                JsonNode items = rootNode.path("response").path("body").path("items");
                 int i = 1;
+                double s;
                 for (JsonNode node : items) {
+                    double sum = 0;
                     SSData data = new SSData();
+                    boolean check1;
                     data.setNumber(i);
                     data.setFact_manage_nm(node.path("fact_manage_nm").asText());
 
                     data.setStack_code(node.path("stack_code").asText());
-                    data.setTsp(node.path("tsp_mesure_value").asText());
-                    data.setSox(node.path("sox_mesure_value").asText());
-                    data.setNox(node.path("nox_mesure_value").asText());
-                    data.setHcl(node.path("hcl_mesure_value").asText());
-                    data.setHf(node.path("hf_mesure_value").asText());
-                    data.setNh3(node.path("nh3_mesure_value").asText());
-                    data.setCo(node.path("co_mesure_value").asText());
+                    check1 = checkInt(node.path("tsp_mesure_value").asText());
+                    if(check1){
+                        s = Double.parseDouble(node.path("tsp_mesure_value").asText());
+                        data.setTsp(s);
+                        sum += s;
+
+                    }
+                    else data.setTsp(0);
+
+                    check1 = checkInt(node.path("sox_mesure_value").asText());
+                    if(check1){
+                        s = Double.parseDouble(node.path("sox_mesure_value").asText());
+                        data.setSox(s);
+                        sum += s;
+
+                    }
+                    else data.setSox(0);
+
+                    check1 = checkInt(node.path("nox_mesure_value").asText());
+                    if(check1){
+                        s = Double.parseDouble(node.path("nox_mesure_value").asText());
+                        data.setNox(s);
+                        sum += s;
+
+                    }
+                    else data.setNox(0);
+
+                    check1 = checkInt(node.path("hcl_mesure_value").asText());
+                    if(check1){
+                        s = Double.parseDouble(node.path("hcl_mesure_value").asText());
+                        data.setHcl(s);
+                        sum += s;
+
+                    }
+                    else data.setHcl(0);
+
+                    check1 = checkInt(node.path("hf_mesure_value").asText());
+                    if(check1){
+                        s = Double.parseDouble(node.path("hf_mesure_value").asText());
+                        data.setHf(s);
+                        sum += s;
+
+                    }
+                    else data.setHf(0);
+
+                    check1 = checkInt(node.path("nh3_mesure_value").asText());
+                    if(check1){
+                        s = Double.parseDouble(node.path("nh3_mesure_value").asText());
+                        data.setNh3(s);
+                        sum += s;
+
+                    }
+                    else data.setNh3(0);
+
+                    check1 = checkInt(node.path("co_mesure_value").asText());
+                    if(check1){
+                        s = Double.parseDouble(node.path("co_mesure_value").asText());
+                        data.setCo(s);
+                        sum += s;
+
+                    }
+                    else data.setCo(0);
+                    data.setSum(Math.round(sum * 1000.0) / 1000.0);
                     i++;
                     dataList.add(data);
                 }
@@ -95,7 +157,7 @@ public class DataParserService {
                 e.printStackTrace();
             }
         } catch (IOException e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
 
     }
