@@ -38,14 +38,27 @@
         });
     });
 </script>
-<div id="ssdListContainer">
-    <ul>
-        <li th:each="ssd : ${ssdList}">
-            <span th:text="${ssd.Fact_manage_nm}"></span> |
-            <span th:text="${ssd.stack_code}"></span> |
-            <span th:text="${ssd.sum}"></span>
-        </li>
-    </ul>
-</div>
+<form action="/" method="get">
+    <input type="text" name="keyword" placeholder="검색">
+    <button type="submit">검색</button>
+</form>
+
+
+<table>
+    <thead>
+    <tr>
+        <th>공장이름</th>
+        <th>굴뚝 번호</th>
+        <th>합계</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="data : ${ssdList2}">
+        <td th:text="${data.factmanagenm}"></td>
+        <td th:text="${data.stackcode}"></td>
+        <td th:text="${data.sum}"></td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
