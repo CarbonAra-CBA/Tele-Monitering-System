@@ -5,6 +5,7 @@ import Smokestack.SmokestackData.Table.SSDAY;
 import Smokestack.SmokestackData.Repository.SSDAYRepository;
 import Smokestack.SmokestackData.Repository.SSDRepository;
 import Smokestack.SmokestackData.Table.SSDCY;
+
 import Smokestack.SmokestackData.Table.SSData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -141,7 +142,7 @@ public class DataParserService {
             }
             rd.close();
             conn.disconnect();
-            System.out.println(sb.toString());
+            //System.out.println(sb.toString());
             String filePath = "data3.json";
 
             // JSON 파일에 데이터 쓰기
@@ -173,12 +174,13 @@ public class DataParserService {
                     SSData data = new SSData();
                     boolean check1;
                     data.setNumber(i);
-                    data.setFact_manage_nm(node.path("fact_manage_nm").asText());
+                    data.setFactmanagenm(node.path("fact_manage_nm").asText());
 
-                    data.setStack_code(node.path("stack_code").asText());
+                    data.setStackcode(node.path("stack_code").asText());
                     check1 = checkInt(node.path("tsp_mesure_value").asText());
                     if(check1){
-                        s = Double.parseDouble(node.path("tsp_mesure_value").asText());
+                        String a = (node.path("tsp_mesure_value").asText());
+                        s = Double.parseDouble(a.replaceAll(",", ""));
                         data.setTsp(s);
                         sum += s;
 
@@ -187,7 +189,8 @@ public class DataParserService {
 
                     check1 = checkInt(node.path("sox_mesure_value").asText());
                     if(check1){
-                        s = Double.parseDouble(node.path("sox_mesure_value").asText());
+                        String a = (node.path("sox_mesure_value").asText());
+                        s = Double.parseDouble(a.replaceAll(",", ""));
                         data.setSox(s);
                         sum += s;
 
@@ -196,7 +199,8 @@ public class DataParserService {
 
                     check1 = checkInt(node.path("nox_mesure_value").asText());
                     if(check1){
-                        s = Double.parseDouble(node.path("nox_mesure_value").asText());
+                        String a = (node.path("nox_mesure_value").asText());
+                        s = Double.parseDouble(a.replaceAll(",", ""));
                         data.setNox(s);
                         sum += s;
 
@@ -205,7 +209,8 @@ public class DataParserService {
 
                     check1 = checkInt(node.path("hcl_mesure_value").asText());
                     if(check1){
-                        s = Double.parseDouble(node.path("hcl_mesure_value").asText());
+                        String a = (node.path("hcl_mesure_value").asText());
+                        s = Double.parseDouble(a.replaceAll(",", ""));
                         data.setHcl(s);
                         sum += s;
 
@@ -214,7 +219,8 @@ public class DataParserService {
 
                     check1 = checkInt(node.path("hf_mesure_value").asText());
                     if(check1){
-                        s = Double.parseDouble(node.path("hf_mesure_value").asText());
+                        String a = (node.path("hf_mesure_value").asText());
+                        s = Double.parseDouble(a.replaceAll(",", ""));
                         data.setHf(s);
                         sum += s;
 
@@ -223,7 +229,8 @@ public class DataParserService {
 
                     check1 = checkInt(node.path("nh3_mesure_value").asText());
                     if(check1){
-                        s = Double.parseDouble(node.path("nh3_mesure_value").asText());
+                        String a = (node.path("nh3_mesure_value").asText());
+                        s = Double.parseDouble(a.replaceAll(",", ""));
                         data.setNh3(s);
                         sum += s;
 
@@ -232,7 +239,10 @@ public class DataParserService {
 
                     check1 = checkInt(node.path("co_mesure_value").asText());
                     if(check1){
-                        s = Double.parseDouble(node.path("co_mesure_value").asText());
+                        String a = (node.path("co_mesure_value").asText());
+                        s = Double.parseDouble(a.replaceAll(",", ""));
+                        //s = Double.parseDouble(node.path("co_mesure_value").asText());
+
                         data.setCo(s);
                         sum += s;
 
