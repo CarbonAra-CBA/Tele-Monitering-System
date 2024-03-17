@@ -1,43 +1,38 @@
-package Smokestack.SmokestackData;
+package Smokestack.SmokestackData.Table;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 @Entity
-
-@Getter @Setter
+@Getter
+@Setter
 public class SSData {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private int Number;
 
-    private String Fact_manage_nm;
+    private String factmanagenm;
 
-    private String Stack_code;
+    private String stackcode;
 
-    private double Tsp; // 먼지
+    private double tsp; // 먼지
 
-    private double Nox; // 질소산화물
+    private double nox; // 질소산화물
 
-    private double Sox; //황산화물
+    private double sox; //황산화물
 
-    private double Hcl; // 염화수소
+    private double hcl; // 염화수소
 
-    private double Hf; // 불화수소
+    private double hf; // 불화수소
 
-    private double Nh3; //암모니아
+    private double nh3; //암모니아
 
-    private double Co; //일산화탄소
+    private double co; //일산화탄소
 
-    private double Sum;
+    private double sum;
 
 
 }
-
-
