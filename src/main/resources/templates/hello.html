@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>주소로 장소 표시하기</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3e3c4a06e8b12265882be6c8b2e58ff3&libraries=services"></script>
+
+</head>
+<body>
+<div id="map" style="width:500px;height:800px;"></div>
+
+<script th:inline="javascript">
+    var ssdcyList = [[${ssdcyListJson}]];
+    console.log(ssdcyList);
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+            center: new kakao.maps.LatLng(36.3625, 127.7), // 지도의 중심좌표
+            level: 13 // 지도의 확대 레벨
+        };
+
+    // 지도를 생성합니다
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    // 주소-좌표 변환 객체를 생성합니다
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    ssdcyList.forEach(function(ssdcy) {
+        geocoder.addressSearch(ssdcy.address, function(result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                var marker = new kakao.maps.Marker({
+                    map: map,
+                    position: coords
+                });
+
+
+            }
+        });
+    });
+</script>
+<form action="/" method="get">
+    <input type="text" name="keyword" placeholder="검색">
+    <button type="submit">검색</button>
+</form>
+
+
+<table>
+    <thead>
+    <tr>
+        <th>공장이름</th>
+        <th>굴뚝 번호</th>
+        <th>합계</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="data : ${ssdList2}">
+        <td th:text="${data.factmanagenm}"></td>
+        <td th:text="${data.stackcode}"></td>
+        <td th:text="${data.sum}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
