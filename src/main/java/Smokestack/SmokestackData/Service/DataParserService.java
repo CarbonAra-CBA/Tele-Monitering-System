@@ -47,7 +47,7 @@ public class DataParserService {
             //urlBuilder.append("&" + URLEncoder.encode("stackCode","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*배출구 번호*/
             urlBuilder.append("&" + URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*json, xml 중 택1, 여기서는 json을 선택*/
             URL url = new URL(urlBuilder.toString()); /*완성된 Url 문자열을 URL 객체에 넣기*/
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection(); /*서버와 연결, 앞으로 통신을 담당할 객체 생성*/
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-type", "application/json");
             System.out.println("Response code: " + conn.getResponseCode());
