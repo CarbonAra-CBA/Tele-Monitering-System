@@ -37,21 +37,26 @@ public class DataParserService {
         return (48 <= s.charAt(0) && s.charAt(0) <= 57);
     }
 
-
+    /*api를 이용해서 지역 정보를 json 형태로 수집한 다음 data.json, data2.json, data3.json 파일에 덮어쓰기
+    * data.json, data3.json 에는 SSData 데이터베이스에 업데이트 할 공장 정보(배출한 화학물질 양 등)이 저장되어 있음
+    * data2.json에는 각 지역별 화학물질 배출량 통계 정보들이 저장되어 있음*/
     public void parseData() {
         try {
-            StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/cleansys/rltmMesureResult"); /*URL*/
+            /*api를 이용하여 공장 정보를 json으로 받아서 data.json으로 저장*/
+            StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/cleansys/rltmMesureResult"); /*URL, 서비스 키 등 여러 문자열을 붙이기 위해 StringBuilder 객체로 선언*/
             urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=zyPKasfClmXWQUP0jZLMGiyMTO0Ykuzu1p5AXxRMTWZLpzeDtt58hJaPT4VvUMpwsswMa2pMScIgEKCGwb3ECw=="); /*Service Key*/
             //urlBuilder.append("&" + URLEncoder.encode("areaNm", "UTF-8") + "=" + URLEncoder.encode("서울", "UTF-8")); /*지역 명 LIKE 검색*/
             //urlBuilder.append("&" + URLEncoder.encode("factManageNm","UTF-8") + "=" + URLEncoder.encode("노원자원회수시설", "UTF-8")); /*사업장의 이름 LIKE 검색*/
             //urlBuilder.append("&" + URLEncoder.encode("stackCode","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*배출구 번호*/
-            urlBuilder.append("&" + URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*json, xml 중 택1*/
-            URL url = new URL(urlBuilder.toString());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            urlBuilder.append("&" + URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*json, xml 중 택1, 여기서는 json을 선택*/
+            URL url = new URL(urlBuilder.toString()); /*완성된 Url 문자열을 URL 객체에 넣기*/
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection(); /*서버와 연결, 앞으로 통신을 담당할 객체 생성*/
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-type", "application/json");
+            conn.setRequestProperty("Content-type", "application/json"); /*Content-Type 헤더로 서버에게 요청 본문이 json 형식임을 알리기*/
             System.out.println("Response code: " + conn.getResponseCode());
             BufferedReader rd;
+            /*getResponseCode의 반환값에 따라 HTTP 상태를 알 수 있음.
+            * 2xx 상태 코드는 요청이 성공적으로 처리되었음을 나타내므로 이 경우에만 네트워크 I/O를 수행*/
             if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
                 rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             } else {
@@ -78,7 +83,7 @@ public class DataParserService {
             e.printStackTrace();
         }
         try {
-
+            /*api를 이용하여 지역별 탄소 배출량 통계 정보를 json으로 받아서 data2.json으로 저장*/
             StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/cleansys/areaFyerBsnesStatsInfo"); /*URL*/
             urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=zyPKasfClmXWQUP0jZLMGiyMTO0Ykuzu1p5AXxRMTWZLpzeDtt58hJaPT4VvUMpwsswMa2pMScIgEKCGwb3ECw=="); /*Service Key*/
             //urlBuilder.append("&" + URLEncoder.encode("areaNm","UTF-8") + "=" + URLEncoder.encode("서울", "UTF-8")); /*지역 명 LIKE 검색 ( 서울특별시 충청북도 충청남도 전라북도 전라남도 경상북도 경상남도 제주특별자치도 세종특별자치시 부산광역시 대구광역시 인천광역시 광주광역시 대전광역시 울산광역시 경기도 강원도 )*/
@@ -117,7 +122,7 @@ public class DataParserService {
             e.printStackTrace();
         }
         try {
-
+            /*api를 이용하여 공장 정보를 json으로 받아서 data3.json으로 저장*/
             StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/cleansys/recentThYearCmprFyerBsnesStatsInfo"); /*URL*/
             urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=zyPKasfClmXWQUP0jZLMGiyMTO0Ykuzu1p5AXxRMTWZLpzeDtt58hJaPT4VvUMpwsswMa2pMScIgEKCGwb3ECw=="); /*Service Key*/
             //urlBuilder.append("&" + URLEncoder.encode("areaNm","UTF-8") + "=" + URLEncoder.encode("서울", "UTF-8")); /*지역 명 LIKE 검색 ( 서울특별시 충청북도 충청남도 전라북도 전라남도 경상북도 경상남도 제주특별자치도 세종특별자치시 부산광역시 대구광역시 인천광역시 광주광역시 대전광역시 울산광역시 경기도 강원도 )*/
@@ -163,7 +168,7 @@ public class DataParserService {
             String json = new String(Files.readAllBytes(Paths.get("data.json")), StandardCharsets.UTF_8);
             ObjectMapper mapper = new ObjectMapper();
             List<SSData> dataList = new ArrayList<>();
-
+            /*공장 정보(배출하는 화학 물질의 양 등)를 SSData 데이터베이스로 옮기기*/
             try {
                 JsonNode rootNode = mapper.readTree(json);
                 JsonNode items = rootNode.path("response").path("body").path("items");
@@ -260,6 +265,7 @@ public class DataParserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        /*지역별로 배출되는 화학 물질의 양을 저장하고 있는 data2.json의 값을 SSDAY 데이터베이스로 옮기기*/
         try {
             String json = new String(Files.readAllBytes(Paths.get("data2.json")), StandardCharsets.UTF_8);
             ObjectMapper mapper = new ObjectMapper();
@@ -298,7 +304,7 @@ public class DataParserService {
             String json = new String(Files.readAllBytes(Paths.get("data3.json")), StandardCharsets.UTF_8);
             ObjectMapper mapper = new ObjectMapper();
             List<SSDCY> dataList = new ArrayList<>();
-
+            /*각 공장의 위치 정보를 SSDCY 데이터베이스에 저장*/
             try {
                 JsonNode rootNode = mapper.readTree(json);
                 JsonNode items = rootNode.path("response").path("body").path("items");
