@@ -1,1 +1,5 @@
-원격 모니터링 시스템
+# Monitering System
+This project is remote Monitering System.
+
+# Object
+Monitering about Eco-Friendly, Net-Zero.
