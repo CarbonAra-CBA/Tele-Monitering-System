@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter
-public class SSDAY {
+public class SSDAY { // 연도별 지역 합 정보
     @Id
     private int Number;
     private String Area_nm;

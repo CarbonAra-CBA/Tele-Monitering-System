@@ -9,7 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class SSData {
+public class SSData { //실시간 정보 1시간 반 단위로 측정
     @Id
     @GeneratedValue
     private int Number;

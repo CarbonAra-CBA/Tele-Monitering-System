@@ -39,7 +39,7 @@ public class DataParserService {
 
 
     public void parseData() {
-        try {
+        try { //SSData
             StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/cleansys/rltmMesureResult"); /*URL*/
             urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=zyPKasfClmXWQUP0jZLMGiyMTO0Ykuzu1p5AXxRMTWZLpzeDtt58hJaPT4VvUMpwsswMa2pMScIgEKCGwb3ECw=="); /*Service Key*/
             //urlBuilder.append("&" + URLEncoder.encode("areaNm", "UTF-8") + "=" + URLEncoder.encode("서울", "UTF-8")); /*지역 명 LIKE 검색*/
@@ -77,7 +77,7 @@ public class DataParserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
+        try { //SSDAY
 
             StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/cleansys/areaFyerBsnesStatsInfo"); /*URL*/
             urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=zyPKasfClmXWQUP0jZLMGiyMTO0Ykuzu1p5AXxRMTWZLpzeDtt58hJaPT4VvUMpwsswMa2pMScIgEKCGwb3ECw=="); /*Service Key*/
@@ -116,7 +116,7 @@ public class DataParserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
+        try { //SSDCY
 
             StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/cleansys/recentThYearCmprFyerBsnesStatsInfo"); /*URL*/
             urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=zyPKasfClmXWQUP0jZLMGiyMTO0Ykuzu1p5AXxRMTWZLpzeDtt58hJaPT4VvUMpwsswMa2pMScIgEKCGwb3ECw=="); /*Service Key*/
@@ -164,7 +164,7 @@ public class DataParserService {
             ObjectMapper mapper = new ObjectMapper();
             List<SSData> dataList = new ArrayList<>();
 
-            try {
+            try { // 숫자가 다 String이라서 Double로 변환
                 JsonNode rootNode = mapper.readTree(json);
                 JsonNode items = rootNode.path("response").path("body").path("items");
                 int i = 1;
@@ -260,7 +260,7 @@ public class DataParserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
+        try { // 지역별 합
             String json = new String(Files.readAllBytes(Paths.get("data2.json")), StandardCharsets.UTF_8);
             ObjectMapper mapper = new ObjectMapper();
             List<SSDAY> dataList = new ArrayList<>();
@@ -294,7 +294,7 @@ public class DataParserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
+        try { //회사 주소
             String json = new String(Files.readAllBytes(Paths.get("data3.json")), StandardCharsets.UTF_8);
             ObjectMapper mapper = new ObjectMapper();
             List<SSDCY> dataList = new ArrayList<>();
