@@ -10,7 +10,7 @@
 <div id="map" style="width:500px;height:800px;"></div>
 <form action="/" method="get">
     <select name="ch">
-        <option value="Sox">황산화물</option>
+        <option value="Sox" selected>황산화물</option>
         <option value="Hcl">염화수소</option>
         <option value="Tsp">먼지</option>
         <option value="Hf">불화수소</option>
@@ -24,7 +24,9 @@
 
 <script th:inline="javascript">
     var ssdcyList = [[${ssdcyList2}]];
-    console.log(ssdcyList);
+    var list = [];
+    console.log(list);
+    //console.log(ssdcyList);
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
             center: new kakao.maps.LatLng(36.3625, 127.7), // 지도의 중심좌표
@@ -46,10 +48,23 @@
                 var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
                 var marker = new kakao.maps.Marker({
                     map: map,
-                    position: coords
+                    position: coords,
+                    title: ssdcy.name
                 });
 
+            var circle = new kakao.maps.Circle({
+                center: coords, // 원의 중심좌표를 마커의 좌표로 변경합니다
+                radius: 1000, // 미터 단위의 원의 반지름입니다
+                strokeWeight: 5, // 선의 두께입니다
+                strokeColor: '#75B8FA', // 선의 색깔입니다
+                strokeOpacity: 1, // 선의 불투명도 입니다
+                strokeStyle: 'dashed', // 선의 스타일 입니다
+                fillColor: '#CFE7FF', // 채우기 색깔입니다
+                fillOpacity: 0.7  // 채우기 불투명도 입니다
+            });
 
+            // 지도에 원을 표시합니다
+            circle.setMap(map);
             }
         });
     });
