@@ -20,17 +20,19 @@ public class HelloController {
     @Autowired
     SSDRepository ssdRepository;
     @GetMapping("/")
-    public String hello(Model model, String keyword, String ch) {
+    public String hello(Model model,String ch) {
 
 
         List<SSDCY> ssdcyList = ssdcyRepository.findAll();
         List<SSData> ssdList = ssdRepository.findAll();
-        List<SSData> ssdList2 = ssdRepository.findByfactmanagenm(keyword);
-        //List<SSDCY> ssdcyList2 = ssdcyRepository.findAll(Sort.by(Sort.Direction.DESC, "ch"));
-
+        //List<SSData> ssdList2 = ssdRepository.findByfactmanagenm(keyword);
+        //List<SSDCY> ssdcyList2 = ssdcyRepository.findAll(Sort.by(Sort.Direction.DESC, ch));
+        List<SSDCY> ssdcyList2 = ssdcyRepository.findAll(Sort.by(Sort.Direction.DESC, ch));
         model.addAttribute("ssdcyListJson", ssdcyList);
         model.addAttribute("ssdList", ssdList);
-        model.addAttribute("ssdList2", ssdList2);
+        //model.addAttribute("ssdList2", ssdList2);
+        model.addAttribute("ssdcyList2", ssdcyList2);
+        model.addAttribute("ch", ch);
 
         return "hello";
     }

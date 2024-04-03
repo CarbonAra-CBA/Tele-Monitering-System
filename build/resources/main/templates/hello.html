@@ -8,9 +8,22 @@
 </head>
 <body>
 <div id="map" style="width:500px;height:800px;"></div>
+<form action="/" method="get">
+    <select name="ch">
+        <option value="Sox">황산화물</option>
+        <option value="Hcl">염화수소</option>
+        <option value="Tsp">먼지</option>
+        <option value="Hf">불화수소</option>
+        <option value="Nh3">암모니아</option>
+        <option value="Co">일산화탄소</option>
+        <option value="Sum">합계</option>
+
+    </select>
+    <button type="submit">정렬</button>
+</form>
 
 <script th:inline="javascript">
-    var ssdcyList = [[${ssdcyListJson}]];
+    var ssdcyList = [[${ssdcyList2}]];
     console.log(ssdcyList);
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
@@ -23,8 +36,11 @@
 
     // 주소-좌표 변환 객체를 생성합니다
     var geocoder = new kakao.maps.services.Geocoder();
+     var ssdcyList3 = ssdcyList.filter(function(ssdcy) {
+        return ssdcy["${ch}"] !== 0;
+    });
 
-    ssdcyList.forEach(function(ssdcy) {
+    ssdcyList3.slice(0, 6).forEach(function(ssdcy) {
         geocoder.addressSearch(ssdcy.address, function(result, status) {
             if (status === kakao.maps.services.Status.OK) {
                 var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
@@ -38,27 +54,5 @@
         });
     });
 </script>
-<form action="/" method="get">
-    <input type="text" name="keyword" placeholder="검색">
-    <button type="submit">검색</button>
-</form>
-
-
-<table>
-    <thead>
-    <tr>
-        <th>공장이름</th>
-        <th>굴뚝 번호</th>
-        <th>합계</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="data : ${ssdList2}">
-        <td th:text="${data.factmanagenm}"></td>
-        <td th:text="${data.stackcode}"></td>
-        <td th:text="${data.sum}"></td>
-    </tr>
-    </tbody>
-</table>
 </body>
 </html>
