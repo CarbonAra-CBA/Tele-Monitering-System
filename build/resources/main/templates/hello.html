@@ -21,17 +21,18 @@
 </form>
 
 <script th:inline="javascript">
-    function calculateDistance(speed, time) { // 그 원의 반경 구할려고요
+    function calculateDistance(speed, time) {
         return speed * time * 60;
     }
 
 
-    function abc(center, radius, directionDegrees) { //그 직선에서 끝점 표시 마땅한 함수명이 생각이 안나서,,,
-        var directionRadians = (Math.PI / 180) * directionDegrees;
+    function abc(center, radius, direction2) {
+
+        var directionRadians = (Math.PI / 180) * direction2;
         var deltaLat = (radius * Math.cos(directionRadians)) / 110540; // 위도 변화량
         var deltaLng = (radius * Math.sin(directionRadians)) / (111320 * Math.cos(center.getLat() * (Math.PI / 180))); // 경도 변화량
 
-
+        // 새 위도와 경도 계산
         var newLat = center.getLat() + deltaLat;
         var newLng = center.getLng() + deltaLng;
 
@@ -62,11 +63,11 @@
                 });
 
                 var colors = ['#FF6347', '#FF4500', '#FF0000'];
-                var windSpeed = 10; //바람 속도 임의의로 넣어놨어요 기상데이터가 받아오면 바꿔주면됩니다.
-                var windDirection = 350; //이것도 임의
+                var windSpeed = 10;
+                var windDirection = 90; // 바람의 방향을 여기에 설정하세요.
 
-                var a; //끝점 저장
-                [30, 60, 90].forEach(function(time, index) { // 30분 단위
+                var a;
+                [30, 60, 90].forEach(function(time, index) {
                     var distance = calculateDistance(windSpeed, time);
                     var circleRadius = distance / 2;
                     var circle = new kakao.maps.Circle({
@@ -81,13 +82,13 @@
                     });
                     circle.setMap(map);
 
-                    if (index === 2) { //마지막 원을 그릴 때
+                    if (index === 2) {
                         a = abc(coords, circleRadius, windDirection);
                     }
                 });
 
-
-                if (a) { // 직석 그려요
+                // 가장 큰 원에 대한 직선을 그립니다.
+                if (a) {
                     var linePath = [coords, a];
                     var polyline = new kakao.maps.Polyline({
                         path: linePath,
