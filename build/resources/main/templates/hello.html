@@ -4,39 +4,50 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>주소로 장소 표시하기</title>
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3e3c4a06e8b12265882be6c8b2e58ff3&libraries=services"></script>
-
 </head>
 <body>
 <div id="map" style="width:500px;height:800px;"></div>
 <form action="/" method="get">
     <select name="ch">
-        <option value="Sox">황산화물</option>
+        <option value="Sox" selected>황산화물</option>
         <option value="Hcl">염화수소</option>
         <option value="Tsp">먼지</option>
         <option value="Hf">불화수소</option>
         <option value="Nh3">암모니아</option>
         <option value="Co">일산화탄소</option>
         <option value="Sum">합계</option>
-
     </select>
     <button type="submit">정렬</button>
 </form>
 
 <script th:inline="javascript">
-    var ssdcyList = [[${ssdcyList2}]];
-    console.log(ssdcyList);
-    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-        mapOption = {
-            center: new kakao.maps.LatLng(36.3625, 127.7), // 지도의 중심좌표
-            level: 13 // 지도의 확대 레벨
-        };
+    function calculateDistance(speed, time) { // 그 원의 반경 구할려고요
+        return speed * time * 60;
+    }
 
-    // 지도를 생성합니다
+
+    function abc(center, radius, directionDegrees) { //그 직선에서 끝점 표시 마땅한 함수명이 생각이 안나서,,,
+        var directionRadians = (Math.PI / 180) * directionDegrees;
+        var deltaLat = (radius * Math.cos(directionRadians)) / 110540; // 위도 변화량
+        var deltaLng = (radius * Math.sin(directionRadians)) / (111320 * Math.cos(center.getLat() * (Math.PI / 180))); // 경도 변화량
+
+
+        var newLat = center.getLat() + deltaLat;
+        var newLng = center.getLng() + deltaLng;
+
+        return new kakao.maps.LatLng(newLat, newLng);
+    }
+
+    // 주소-좌표 변환 객체 생성
+    var geocoder = new kakao.maps.services.Geocoder();
+    var mapContainer = document.getElementById('map'),
+        mapOption = {
+            center: new kakao.maps.LatLng(36.3625, 127.7),
+            level: 13
+        };
     var map = new kakao.maps.Map(mapContainer, mapOption);
 
-    // 주소-좌표 변환 객체를 생성합니다
-    var geocoder = new kakao.maps.services.Geocoder();
-     var ssdcyList3 = ssdcyList.filter(function(ssdcy) {
+    var ssdcyList3 = [[${ssdcyList2}]].filter(function(ssdcy) {
         return ssdcy["${ch}"] !== 0;
     });
 
@@ -46,10 +57,47 @@
                 var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
                 var marker = new kakao.maps.Marker({
                     map: map,
-                    position: coords
+                    position: coords,
+                    title: ssdcy.name
+                });
+
+                var colors = ['#FF6347', '#FF4500', '#FF0000'];
+                var windSpeed = 10; //바람 속도 임의의로 넣어놨어요 기상데이터가 받아오면 바꿔주면됩니다.
+                var windDirection = 350; //이것도 임의
+
+                var a; //끝점 저장
+                [30, 60, 90].forEach(function(time, index) { // 30분 단위
+                    var distance = calculateDistance(windSpeed, time);
+                    var circleRadius = distance / 2;
+                    var circle = new kakao.maps.Circle({
+                        center: coords,
+                        radius: circleRadius,
+                        strokeWeight: 5,
+                        strokeColor: colors[index],
+                        strokeOpacity: 0.8 - (index * 0.2),
+                        strokeStyle: 'dashed',
+                        fillColor: colors[index],
+                        fillOpacity: 0.5 - (index * 0.15)
+                    });
+                    circle.setMap(map);
+
+                    if (index === 2) { //마지막 원을 그릴 때
+                        a = abc(coords, circleRadius, windDirection);
+                    }
                 });
 
 
+                if (a) { // 직석 그려요
+                    var linePath = [coords, a];
+                    var polyline = new kakao.maps.Polyline({
+                        path: linePath,
+                        strokeWeight: 5,
+                        strokeColor: '#FFAE00',
+                        strokeOpacity: 0.7,
+                        strokeStyle: 'solid'
+                    });
+                    polyline.setMap(map);
+                }
             }
         });
     });

@@ -22,7 +22,9 @@ public class HelloController {
     @GetMapping("/")
     public String hello(Model model,String ch) {
 
-
+        if (ch == null || ch.isEmpty()) {
+            ch = "Sox"; // 기본값 설정
+        }
         List<SSDCY> ssdcyList = ssdcyRepository.findAll();
         List<SSData> ssdList = ssdRepository.findAll();
         //List<SSData> ssdList2 = ssdRepository.findByfactmanagenm(keyword);
