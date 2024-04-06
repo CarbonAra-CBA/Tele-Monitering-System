@@ -21,18 +21,17 @@
 </form>
 
 <script th:inline="javascript">
-    function calculateDistance(speed, time) {
+    function calculateDistance(speed, time) { //원의 반경
         return speed * time * 60;
     }
 
 
-    function abc(center, radius, direction2) {
+    function abc(center, radius, direction2) { // 그그그 그그그 직선의 끝점
 
         var directionRadians = (Math.PI / 180) * direction2;
-        var deltaLat = (radius * Math.cos(directionRadians)) / 110540; // 위도 변화량
-        var deltaLng = (radius * Math.sin(directionRadians)) / (111320 * Math.cos(center.getLat() * (Math.PI / 180))); // 경도 변화량
+        var deltaLat = (radius * Math.cos(directionRadians)) / 110540;
+        var deltaLng = (radius * Math.sin(directionRadians)) / (111320 * Math.cos(center.getLat() * (Math.PI / 180)));
 
-        // 새 위도와 경도 계산
         var newLat = center.getLat() + deltaLat;
         var newLng = center.getLng() + deltaLng;
 
@@ -64,10 +63,10 @@
 
                 var colors = ['#FF6347', '#FF4500', '#FF0000'];
                 var windSpeed = 10;
-                var windDirection = 90; // 바람의 방향을 여기에 설정하세요.
+                var windDirection = 90;
 
-                var a;
-                [30, 60, 90].forEach(function(time, index) {
+                var a; // 이거 직선 끝점
+                [30, 60, 90].forEach(function(time, index) { // 30 60 90분
                     var distance = calculateDistance(windSpeed, time);
                     var circleRadius = distance / 2;
                     var circle = new kakao.maps.Circle({
@@ -87,8 +86,7 @@
                     }
                 });
 
-                // 가장 큰 원에 대한 직선을 그립니다.
-                if (a) {
+                if (a) { // 직선 그리기
                     var linePath = [coords, a];
                     var polyline = new kakao.maps.Polyline({
                         path: linePath,
