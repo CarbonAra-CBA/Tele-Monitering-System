@@ -37,69 +37,72 @@
 
         return new kakao.maps.LatLng(newLat, newLng);
     }
+    function mapApi(){
+        // 주소-좌표 변환 객체 생성
+        var geocoder = new kakao.maps.services.Geocoder();
+        var mapContainer = document.getElementById('map'),
+            mapOption = {
+                center: new kakao.maps.LatLng(36.3625, 127.7),
+                level: 13
+            };
+        var map = new kakao.maps.Map(mapContainer, mapOption);
 
-    // 주소-좌표 변환 객체 생성
-    var geocoder = new kakao.maps.services.Geocoder();
-    var mapContainer = document.getElementById('map'),
-        mapOption = {
-            center: new kakao.maps.LatLng(36.3625, 127.7),
-            level: 13
-        };
-    var map = new kakao.maps.Map(mapContainer, mapOption);
-
-    var ssdcyList3 = [[${ssdcyList2}]].filter(function(ssdcy) {
-        return ssdcy["${ch}"] !== 0;
-    });
-
-    ssdcyList3.slice(0, 6).forEach(function(ssdcy) {
-        geocoder.addressSearch(ssdcy.address, function(result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-                var marker = new kakao.maps.Marker({
-                    map: map,
-                    position: coords,
-                    title: ssdcy.name
-                });
-
-                var colors = ['#FF6347', '#FF4500', '#FF0000'];
-                var windSpeed = 10;
-                var windDirection = 90;
-
-                var a; // 이거 직선 끝점
-                [30, 60, 90].forEach(function(time, index) { // 30 60 90분
-                    var distance = calculateDistance(windSpeed, time);
-                    var circleRadius = distance / 2;
-                    var circle = new kakao.maps.Circle({
-                        center: coords,
-                        radius: circleRadius,
-                        strokeWeight: 5,
-                        strokeColor: colors[index],
-                        strokeOpacity: 0.8 - (index * 0.2),
-                        strokeStyle: 'dashed',
-                        fillColor: colors[index],
-                        fillOpacity: 0.5 - (index * 0.15)
-                    });
-                    circle.setMap(map);
-
-                    if (index === 2) {
-                        a = abc(coords, circleRadius, windDirection);
-                    }
-                });
-
-                if (a) { // 직선 그리기
-                    var linePath = [coords, a];
-                    var polyline = new kakao.maps.Polyline({
-                        path: linePath,
-                        strokeWeight: 5,
-                        strokeColor: '#FFAE00',
-                        strokeOpacity: 0.7,
-                        strokeStyle: 'solid'
-                    });
-                    polyline.setMap(map);
-                }
-            }
+        var ssdcyList3 = [[${ssdcyList2}]].filter(function(ssdcy) {
+            return ssdcy["${ch}"] !== 0;
         });
-    });
+
+        ssdcyList3.slice(0, 6).forEach(function(ssdcy) {
+            geocoder.addressSearch(ssdcy.address, function(result, status) {
+                if (status === kakao.maps.services.Status.OK) {
+                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                    var marker = new kakao.maps.Marker({
+                        map: map,
+                        position: coords,
+                        title: ssdcy.name
+                    });
+
+                    var colors = ['#FF6347', '#FF4500', '#FF0000'];
+                    var windSpeed = 10;
+                    var windDirection = 90;
+
+                    var a; // 이거 직선 끝점
+                    [30, 60, 90].forEach(function(time, index) { // 30 60 90분
+                        var distance = calculateDistance(windSpeed, time);
+                        var circleRadius = distance / 2;
+                        var circle = new kakao.maps.Circle({
+                            center: coords,
+                            radius: circleRadius,
+                            strokeWeight: 5,
+                            strokeColor: colors[index],
+                            strokeOpacity: 0.8 - (index * 0.2),
+                            strokeStyle: 'dashed',
+                            fillColor: colors[index],
+                            fillOpacity: 0.5 - (index * 0.15)
+                        });
+                        circle.setMap(map);
+
+                        if (index === 2) {
+                            a = abc(coords, circleRadius, windDirection);
+                        }
+                    });
+
+                    if (a) { // 직선 그리기
+                        var linePath = [coords, a];
+                        var polyline = new kakao.maps.Polyline({
+                            path: linePath,
+                            strokeWeight: 5,
+                            strokeColor: '#FFAE00',
+                            strokeOpacity: 0.7,
+                            strokeStyle: 'solid'
+                        });
+                        polyline.setMap(map);
+                    }
+                }
+            });
+        });
+    }
+    mapApi;
+
 </script>
 </body>
 </html>
